@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div id="person"></div>
+        <button id="btn">Get Person</button><br>
+
+        firstname: <input type="text" id="firstName" name="firstName"><br>
+        lastname: <input type="text" id="lastName" name="lastName"><br>
+        age: <input type="text" id="age" name="age"><br>
+        <button id="btn-person">Add Person</button>
+        <script>
+            var btn = document.getElementById("btn");
+            var index = 0;
+            btn.addEventListener("click", function () {
+                var url = "http://localhost:8084/JasonEx2/personControl";
+                var conf = {method: 'get'};
+                var promise = fetch(url, conf);
+                promise.then(function (response) {
+                    return response.text();
+                }).then(function (text) {
+                    var jsonObj = JSON.parse(text);
+                    console.log(jsonObj);
+                    if (!(index > jsonObj.length - 1)) {
+                        document.getElementById("person").innerText += jsonObj[index].firstName + " " + jsonObj[index].lastName + "\n";
+                        index++;
+                    } else {
+                        document.getElementById("person").innerText += "There are no more persons";
+                    }
+                });
+            });
+
+            var btnPerson = document.getElementById("btn-person");
+            btnPerson.addEventListener("click", function () {
+                var data = {firstName: document.getElementById("firstName").value, lastName: document.getElementById("lastName").value, age: document.getElementById("age").value};
+                var url = "http://localhost:8084/JasonEx2/personControl";
+                var conf = {method: 'post', body: JSON.stringify(data)};
+                console.log(conf);
+                fetch(url,conf);
+            });
+
+        </script>
+    </body>
+</html>
